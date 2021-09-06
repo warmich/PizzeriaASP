@@ -1,0 +1,26 @@
+﻿@model IEnumerable<Pizzeria.ASP.Models.CategorieModel>
+
+@{ 
+    ViewData["Title"] = "Categorie";
+}
+
+<a class="nav-link text-dark" asp-area="" asp-controller="Categorie" asp-action="Add">Add</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Nom</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var categorie in Model)
+        {
+            <tr>
+                <td>@categorie.Id</td>
+                <td>@categorie.Nom</td>
+                <td>...</td>
+            </tr>
+        }
+    </tbody>
+</table>
