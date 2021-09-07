@@ -1,26 +1,44 @@
-﻿@model IEnumerable<Pizzeria.ASP.Models.CategorieModel>
+﻿@model IEnumerable<CategorieModel>
 
-@{ 
-    ViewData["Title"] = "Categorie";
+@{
+	ViewData["Title"] = "Categorie";
 }
-
-<a class="nav-link text-dark" asp-area="" asp-controller="Categorie" asp-action="Add">Add</a>
+<div class="mb-2">
+	<a class="btn btn-info" asp-controller="Categorie" asp-action="Create">Ajouter</a>
+</div>
 <table class="table">
-    <thead>
-        <tr>
-            <th>Id</th>
-            <th>Nom</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var categorie in Model)
-        {
-            <tr>
-                <td>@categorie.Id</td>
-                <td>@categorie.Nom</td>
-                <td>...</td>
-            </tr>
-        }
-    </tbody>
+	<thead>
+		<tr>
+			<th>Id</th>
+			<th>Nom</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var categorie in Model)
+		{
+			<tr>
+				<td>@categorie.Id</td>
+				<td>@categorie.Nom</td>
+				<td>
+					<a class="btn btn-danger deleteButton" asp-action="Delete" asp-route-id="@categorie.Id">Supprimer</a>
+					<a class="btn btn-warning" asp-action="Update" asp-route-id="@categorie.Id">Éditer</a>
+				</td>
+			</tr>
+		}
+	</tbody>
 </table>
+
+@section Scripts {
+<script>
+	const deleteButtons = document.getElementsByClassName('deleteButton');
+	for (let button of deleteButtons) {
+		button.addEventListener('click', (event) => {
+			let reponse = confirm();
+			if (!reponse) {
+				event.preventDefault();
+			}
+		})
+	}
+</script>
+}

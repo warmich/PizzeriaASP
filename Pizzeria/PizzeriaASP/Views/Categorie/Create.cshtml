@@ -1,0 +1,11 @@
+﻿@model CategorieAddModel
+<form method="POST" asp-action="Create">
+	<label>Nom de la catégorie</label>
+	<input asp-for="Nom" />
+	<button class="btn btn-danger">Envoyer</button><br />
+	<span asp-validation-for="Nom"></span>
+</form>
+
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+}
