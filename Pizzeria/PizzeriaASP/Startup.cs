@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
+using Pizzeria.ASP.Services;
 using Pizzeria.DAL;
 using System;
 using System.Collections.Generic;
@@ -26,7 +28,10 @@ namespace PizzeriaASP
         {
             services.AddControllersWithViews();
 
-            services.AddDbContext<PizzeriaContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Default")));
+            services.AddDbContext<PizzeriaContext>(
+                options => options.UseSqlServer(Configuration.GetConnectionString("Default")));
+
+            services.AddScoped<ICategorieService, CategorieService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

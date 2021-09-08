@@ -17,4 +17,8 @@
     <ProjectReference Include="..\Pizzeria.DAL\Pizzeria.DAL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\uploads\" />
+  </ItemGroup>
+
 </Project>

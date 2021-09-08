@@ -3,24 +3,36 @@
 	ViewData["Title"] = "Plats";
 }
 
-<div class="mb-2">
-	<a class="btn btn-info" asp-controller="Plat" asp-action="Create">Ajouter</a>
-</div>
-
-<form method="get">
-	<select asp-for="Filtre">
-		<option value="null">Toutes</option>
-		@foreach (CategorieModel c in Model.Categories)
-		{
-			<option value="@c.Id">@c.Nom</option>
-		}
-	</select>
-	<button class="btn btn-primary">Filtrer</button>
-</form>
+<nav class="navbar navbar-expand-md navbar-light">
+	<div class="collapse navbar-collapse" id="navbarNav">
+		<ul class="navbar-nav mr-auto">
+			<li class="nav-item">
+				<a class="btn btn-info" asp-controller="Plat" asp-action="Create">Ajouter</a>
+			</li>
+		</ul>
+		<ul class="navbar-nav">
+			<li class="nav-item mr-auto">
+				<form method="get">
+					<select asp-for="Filtre">
+						<option value="null">Toutes</option>
+						@foreach (CategorieModel c in Model.Categories)
+						{
+							<option value="@c.Id">@c.Nom</option>
+						}
+					</select>
+					<button class="btn btn-primary mb-2">Filtrer</button>
+				</form>
+			</li>
+		</ul>
+	</div>
+</nav>
 
 <table class="table">
 	<thead>
-		<tr>
+		<tr class="text-xl-left bg-light">
+			<th class="text-hide">
+				Image
+			</th>
 			<th>
 				Nom
 			</th>
@@ -29,9 +41,6 @@
 			</th>
 			<th>
 				Description
-			</th>
-			<th>
-				Image
 			</th>
 			<th>
 				Nom de Catégorie
@@ -43,23 +52,23 @@
 		@foreach (var plat in Model.Plats)
 		{
 			<tr>
-				<td>
+				<td class="align-middle">
+					<img src="/uploads/@(plat.Image ?? "PlaceHolder.png")" style="height: 3rem; width: auto" class="description" />
+				</td>
+				<td class="align-middle">
 					@plat.Nom
 				</td>
-				<td>
+				<td class="align-middle">
 					@plat.Prix
 				</td>
-				<td>
+				<td class="align-middle">
 					@plat.Description
 				</td>
-				<td>
-					@plat.Image
-				</td>
-				<td>
+				<td class="align-middle">
 					@plat.Categorie.Nom
 				</td>
-				<td>
-					<a class="btn btn-warning" asp-action="Update" asp-route-id="@plat.Id">Éditer</a>
+				<td class="align-middle">
+					<a class="btn btn-warning" asp-action="Edit" asp-route-id="@plat.Id">Éditer</a>
 					<a class="btn btn-info" asp-action="Details" asp-route-id="@plat.Id">Détails</a>
 					<a class="btn btn-danger deleteButton" asp-action="Delete" asp-route-id="@plat.Id">Supprimer</a>
 				</td>
