@@ -28,10 +28,24 @@ namespace PizzeriaASP
         {
             services.AddControllersWithViews();
 
-            services.AddDbContext<PizzeriaContext>(
+            services.AddDistributedMemoryCache();
+
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromDays(1);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
+
+			services.AddDbContext<PizzeriaContext>(
                 options => options.UseSqlServer(Configuration.GetConnectionString("Default")));
 
             services.AddScoped<ICategorieService, CategorieService>();
+            services.AddScoped<IPlatService, PlatService>();
+            services.AddScoped<IFileService, FileService>();
+            services.AddScoped<IClientService, ClientService>();
+            services.AddScoped<IHashService, HashService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -46,6 +60,8 @@ namespace PizzeriaASP
                 app.UseExceptionHandler("/Home/Error");
             }
             app.UseStaticFiles();
+
+            app.UseSession();
 
             app.UseRouting();
 

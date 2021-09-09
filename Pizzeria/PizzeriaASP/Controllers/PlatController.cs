@@ -9,47 +9,37 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 using Pizzeria.ASP.Models;
+using Pizzeria.ASP.Security;
+using Pizzeria.ASP.Services;
 using Pizzeria.DAL;
 using Pizzeria.DAL.Entities;
 
 namespace Pizzeria.ASP.Controllers
 {
+	// [CustomAuthorisation("Admin")]
 	public class PlatController : Controller
 	{
 		private readonly PizzeriaContext _dc;
 		private readonly IWebHostEnvironment _env;
+		private readonly ICategorieService _catService;
+		private readonly IPlatService _platService;
 
-		public PlatController(PizzeriaContext dc, IWebHostEnvironment env) // injection des dépendances
+		public PlatController(ICategorieService catService, IPlatService platService, PizzeriaContext dc, IWebHostEnvironment env) // injection des dépendances
 		{
 			_dc = dc;
 			_env = env;
+			_catService = catService;
+			_platService = platService;
 		}
 
 		// GET: PageController
-		public ActionResult Index([FromQuery]int? filtre)
+		public IActionResult Index([FromQuery]int? filtre)
 		{
 			PlatCategorieModel model = new()
 			{
 				Filtre = filtre,
-				Plats = _dc.Plats
-				.Where(p => p.CategorieId == filtre || filtre == null)
-				.Select(p => new PlatModel
-				{
-					Id = p.Id,
-					Nom = p.Nom,
-					Prix = p.Prix,
-					Description = p.Description,
-					Image = p.Image,
-					CategorieId = p.CategorieId,
-					Categorie = p.Categorie
-				}),
-				Categories = _dc.Categories.Select(
-					c => new CategorieModel
-					{
-						Id = c.Id,
-						Nom = c.Nom
-					}
-					)
+				Plats = _platService.GetAll(filtre),
+				Categories = _catService.GetAll()
 			};
 			return View(model);
 		}
@@ -61,56 +51,29 @@ namespace Pizzeria.ASP.Controllers
 		}
 
 		// GET: PageController/Create
+		[CustomAuthorisation("Admin")]
 		public ActionResult Create()
 		{
 			PlatAddModel model = new()
 			{
-				Categories = _dc.Categories.Select(
-					c => new CategorieModel
-					{
-						Id = c.Id,
-						Nom = c.Nom
-					})
+				Categories = _catService.GetAll()
 			};
 			return View(model);
 		}
 
 		// POST: PageController/Create
+		[CustomAuthorisation("Admin")]
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public IActionResult Create(PlatAddModel form)
 		{
-			string fileName = null;
 			if (ModelState.IsValid)
 			{
-				if (form.File != null)
-				{
-					fileName = Guid.NewGuid() + form.File.FileName;
-					string path = Path.Combine(_env.WebRootPath, "uploads");
-					using FileStream stream = new FileStream(
-						Path.Combine(path, fileName), FileMode.Create);
-					form.File.CopyTo(stream);
-				}
-
-				Plat p = new Plat
-				{
-					Nom = form.Nom,
-					Description = form.Description,
-					Prix = decimal.Parse(form.Prix.Replace('.',',')),
-					Image = fileName,
-					CategorieId = form.CategorieId
-				};
-				_dc.Plats.Add(p);
-				_dc.SaveChanges();
+				_platService.Create(form);
 				TempData["success"] = "Enregistrement effectué";
 				return RedirectToAction("Index");
 			}
-			form.Categories = _dc.Categories.Select(
-					c => new CategorieModel
-					{
-						Id = c.Id,
-						Nom = c.Nom
-					});
+			form.Categories = _catService.GetAll();
 			return View(form);
 		}
 
@@ -148,18 +111,7 @@ namespace Pizzeria.ASP.Controllers
 		// GET: PageController/Delete/5
 		public ActionResult Delete(int id)
 		{
-			Plat toDelete = _dc.Plats.Find(id);
-			_dc.Plats.Remove(toDelete);
-			_dc.SaveChanges();
-			if (toDelete.Image != null)
-			{
-				System.IO.File.Delete(
-					Path.Combine(
-						_env.WebRootPath,
-						"uploads",
-						toDelete.Image
-						));
-			}
+			Plat value = _platService.Delete(id);
 			return this.RedirectToAction("Index");
 		}
 

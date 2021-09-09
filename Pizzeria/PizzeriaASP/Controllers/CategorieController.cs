@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
 using Pizzeria.ASP.Models;
+using Pizzeria.ASP.Security;
 using Pizzeria.ASP.Services;
 using Pizzeria.DAL;
 using Pizzeria.DAL.Entities;
@@ -12,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace Pizzeria.ASP.Controllers
 {
+	[CustomAuthorisation("Admin")]
 	public class CategorieController : Controller
 	{
 		private readonly ICategorieService _categorieService;

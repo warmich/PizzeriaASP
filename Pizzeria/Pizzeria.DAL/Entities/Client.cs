@@ -14,8 +14,10 @@ namespace Pizzeria.DAL.Entities
         public string Nom { get; set; }
         public string Telephone { get; set; }
         public string Email { get; set; }
-        public byte[] Password { get; set; }
-        public IEnumerable<Commande> Commandes { get; set; }
+        public string Password { get; set; }
+		public string Role { get; set; }
+		public Guid Salt { get; set; }
+		public IEnumerable<Commande> Commandes { get; set; }
 
         #endregion
     }

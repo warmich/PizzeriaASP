@@ -23,7 +23,7 @@ namespace Pizzeria.ASP.Models
 		[Required(ErrorMessage = "Ce champ est requis")]
 		public int CategorieId { get; set; }
 
-		[FileMimeType("image/jpg", "image/png", "image/x-icon")]
+		[FileMimeType("image/jpg", "image/jpeg", "image/png", "image/x-icon")]
 		public IFormFile File { get; set; }
 		public IEnumerable<CategorieModel> Categories { get; set; }
 
